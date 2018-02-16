@@ -2,8 +2,13 @@ package com.udacity.sandwichclub;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -14,13 +19,22 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
-
+    private TextView name, description, origin, otherNames, ingrediants;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
+        name = findViewById(R.id.name);
+        description = findViewById(R.id.description_tv);
+        origin = findViewById(R.id.origin_tv);
+        otherNames = findViewById(R.id.also_known_tv);
+        ingrediants = findViewById(R.id.ingredients_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -43,7 +57,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +70,31 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    private void populateUI(Sandwich sandwich) {
+        name.setText(sandwich.getMainName());
+        description.setText(sandwich.getDescription());
+        origin.setText(sandwich.getPlaceOfOrigin());
+        StringBuilder names = new StringBuilder();
+        for (int i=0; i<sandwich.getAlsoKnownAs().size(); i++) {
+            names.append(sandwich.getAlsoKnownAs().get(i)+", ");
+        }
+        otherNames.setText(names.toString());
+
+        StringBuilder greds = new StringBuilder();
+        for (int j=0; j<sandwich.getIngredients().size(); j++) {
+            greds.append(sandwich.getIngredients().get(j)+", ");
+        }
+        ingrediants.setText(greds.toString());
     }
 }
