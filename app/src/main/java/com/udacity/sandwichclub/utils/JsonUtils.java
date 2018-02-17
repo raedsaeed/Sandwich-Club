@@ -15,11 +15,6 @@ public class JsonUtils {
     private static final String TAG = "JsonUtils";
     public static Sandwich parseSandwichJson(String json) {
 
-        json = json.replaceAll("\\\\", "")
-                .replaceAll("\n", "")
-                .trim()
-                .replaceAll("\\s{2,}", " ");
-
         Sandwich sandwich = null;
         String mainName;
         List<String> alsoKnownAs = new ArrayList<>();
